@@ -14,8 +14,10 @@ import com.example.mycomposeapplication.data.*
 import com.example.mycomposeapplication.`interface`.LightTheme
 import com.example.mycomposeapplication.navigation.Navigation
 import com.example.mycomposeapplication.network.DataObject
+import dagger.hilt.android.AndroidEntryPoint
 import kotlin.Result
 
+@AndroidEntryPoint
 
 class MainActivity : ComponentActivity() {
     private lateinit var userRepository: UserRepository

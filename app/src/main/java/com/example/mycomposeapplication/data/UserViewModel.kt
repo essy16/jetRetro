@@ -9,7 +9,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
-class UserViewModel  constructor(val userRepository: UserRepository) : ViewModel() {
+class UserViewModel  @Inject constructor(val userRepository: UserRepository) : ViewModel() {
 
     companion object {
 

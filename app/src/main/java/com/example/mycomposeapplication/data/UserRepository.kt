@@ -4,8 +4,9 @@ import android.content.Context
 import android.net.ConnectivityManager
 
 import com.example.mycomposeapplication.network.ApiService
+import javax.inject.Inject
 
-class UserRepository(
+class UserRepository  @Inject constructor(
     private val apiService: ApiService,
     private val userDatabase: UserDatabase,
     private val context: Context

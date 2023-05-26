@@ -6,7 +6,9 @@ import com.example.mycomposeapplication.data.UserDatabase
 import com.example.mycomposeapplication.data.UserRepository
 import com.example.mycomposeapplication.network.ApiService
 import com.example.mycomposeapplication.network.DataObject
+import dagger.hilt.android.HiltAndroidApp
 
+@HiltAndroidApp
 open class MyApplication : Application() {
     private lateinit var apiService: ApiService
     private lateinit var userDatabase: UserDatabase
