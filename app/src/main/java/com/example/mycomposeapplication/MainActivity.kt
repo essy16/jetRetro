@@ -5,39 +5,29 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.staticCompositionLocalOf
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.room.Room
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import com.example.mycomposeapplication.data.*
 import com.example.mycomposeapplication.`interface`.LightTheme
 import com.example.mycomposeapplication.navigation.Navigation
-import com.example.mycomposeapplication.network.DataObject
+import com.example.mycomposeapplication.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
 import kotlin.Result
 
 @AndroidEntryPoint
-
 class MainActivity : ComponentActivity() {
-    private lateinit var userRepository: UserRepository
-    val userViewModel : UserViewModel by viewModels { UserViewModel.provideViewModelFactory() }
+    private lateinit var mUserRepositoryImpl: UserRepositoryImpl
+    private val userViewModel : UserViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val apiService = DataObject.dataInstance
-        val userDatabase = Room.databaseBuilder(
-            applicationContext,
-            UserDatabase::class.java,
-            "user-database"
-        ).build()
-        val applicationContext = application.applicationContext
-        userRepository = UserRepository(apiService, userDatabase, applicationContext)
-
         setContent {
+            val usersListState = userViewModel.users.collectAsState()
             LightTheme {
-                MyApp(userRepository)
+                MyApp(
+                    usersListState = usersListState
+                )
             }
         }
     }
@@ -45,24 +35,11 @@ class MainActivity : ComponentActivity() {
 
 
 @Composable
-fun MyApp(userRepository: UserRepository) {
-    ProvideViewModel(userRepository = userRepository) {
-        val userViewModel = LocalUserViewModel.current
-        val users: Result<List<User>>? = userViewModel.users.value
-        Navigation()
-    }
+fun MyApp(
+    usersListState : State<Resource<List<UserDto>>>
+) {
+    Navigation(
+      usersListState = usersListState
+    )
 }
 
-
-@Composable
-fun ProvideViewModel(userRepository: UserRepository, content: @Composable () -> Unit) {
-    val viewModel: UserViewModel = viewModel(factory = UserViewModel.provideViewModelFactory())
-    CompositionLocalProvider(LocalUserViewModel provides viewModel) {
-        content()
-    }
-}
-
-
-val LocalUserViewModel = staticCompositionLocalOf<UserViewModel> {
-    error("No UserViewModel Provided")
-}

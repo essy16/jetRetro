@@ -3,51 +3,47 @@ package com.example.mycomposeapplication.data
 import androidx.lifecycle.*
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewmodel.CreationExtras
-import com.example.mycomposeapplication.MyApplication
+import com.example.mycomposeapplication.utils.Resource
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
-class UserViewModel  @Inject constructor(val userRepository: UserRepository) : ViewModel() {
+@HiltViewModel
+class UserViewModel  @Inject constructor(
+    private val userRepositoryImpl: UserRepositoryImpl
+    ) : ViewModel() {
 
-    companion object {
-
-        fun provideViewModelFactory() : ViewModelProvider.Factory =
-            object : ViewModelProvider.Factory {
-                override fun <T : ViewModel> create(
-                    modelClass: Class<T>,
-                    extras: CreationExtras
-                ): T {
-                    val application = checkNotNull(
-                        extras[APPLICATION_KEY]
-                    )
-                    return UserViewModel(
-                        (application as MyApplication).repository
-                    ) as T
-                }
-            }
-    }
-
-
-     val _users = MutableLiveData<Result<List<User>>>()
+/*     val m_users = MutableLiveData<Result<List<UserEntity>>>()
 //    private val _users = MutableLiveData<List<User>>()
-    val users: MutableLiveData<Result<List<User>>>
-        get() = _users
+    val users: MutableLiveData<Result<List<UserEntity>>>
+        get() = m_users*/
+    val users = userRepositoryImpl.getUsers()
+    .stateIn(
+        viewModelScope ,
+        started = SharingStarted.WhileSubscribed(
+            stopTimeoutMillis = 5000
+        ) ,
+        initialValue = Resource.Loading(emptyList<UserDto>())
+    )
 
 
-    fun getUsers(){
+   /* fun getUsers(){
         viewModelScope.launch(Dispatchers.IO) {
             try{
-            val response = userRepository.getUsers()
-            _users.postValue(response)
+            val response = userRepositoryImpl.getUsers()
+            m_users.postValue(response)
         } catch (_: Exception){
         }
         }
-    }
+    }*/
 
-    suspend fun getUserById(userId: Int): User{
-        return userRepository.getUserById(userId)
+    suspend fun getUserById(userId: Int): UserEntity{
+        return userRepositoryImpl.getUserById(userId)
     }
 }
 

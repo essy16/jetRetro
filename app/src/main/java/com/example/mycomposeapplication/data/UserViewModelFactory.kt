@@ -2,7 +2,6 @@ package com.example.mycomposeapplication.data
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.mycomposeapplication.data.UserRepository
 import javax.inject.Inject
 
 class UserViewModelFactory @Inject constructor(private val userViewModel: UserViewModel) : ViewModelProvider.Factory {

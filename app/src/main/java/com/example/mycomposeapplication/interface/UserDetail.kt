@@ -7,29 +7,33 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mycomposeapplication.Result
-import com.example.mycomposeapplication.data.User
+import com.example.mycomposeapplication.data.UserEntity
 import com.example.mycomposeapplication.data.UserViewModel
 
 
 @Composable
-fun UserDetail(userId: Int) {
-    val userViewModel: UserViewModel = viewModel()
-    var userState by remember(userId) {
-        mutableStateOf<Result<User>>(Result.Loading)
+fun UserDetail(
+    userId: Int ,
+    userViewModel: UserViewModel = hiltViewModel()
+) {
+
+    var userEntityState by remember(userId) {
+        mutableStateOf<Result<UserEntity>>(Result.Loading)
     }
 
     LaunchedEffect(userId) {
         try {
             val user = userViewModel.getUserById(userId)
-            userState = Result.Success(user)
+            userEntityState = Result.Success(user)
         } catch (e: Exception) {
-            userState = Result.Failure(e)
+            userEntityState = Result.Failure(e)
         }
     }
 
-    when (val result = userState) {
+    when (val result = userEntityState) {
         is Result.Success -> {
             val user = result.value
 

@@ -1,23 +1,19 @@
 package com.example.mycomposeapplication.data
 
-import android.content.Context
 import androidx.room.Database
-import androidx.room.Room
 import androidx.room.RoomDatabase
-import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.internal.synchronized
 
 // This class will represent database
 
 // UserDatabase class will be a singleton class i.e only 1 instance
 
-@Database(entities = [User::class], version = 1, exportSchema = false)
+@Database(entities = [UserEntity::class], version = 1, exportSchema = false)
 abstract class UserDatabase : RoomDatabase() {
 
     abstract fun userDao() : UserDao
 
     // everything in companion object will be visible to other classes
-    companion object{
+    /*companion object{
         @Volatile
         // READS AND WRITES TO THIS INSTANCE VARIABLE IS VISIBLE TO OTHER THREADS BECAUSE
         // ANNOTATED AS VOLATILE
@@ -43,5 +39,5 @@ abstract class UserDatabase : RoomDatabase() {
                 return instance
             }
         }
-    }
+    }*/
 }
